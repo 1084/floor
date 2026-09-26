@@ -1,4 +1,4 @@
-// The Floor — data pipeline.
+// Open Chambers — data pipeline.
 // Pulls public sources, normalizes them, and writes static JSON into docs/data/.
 // Runs nightly in GitHub Actions (see .github/workflows/data.yml) or locally: `npm run build`.
 //

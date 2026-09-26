@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- The Floor — Copyright (c) 2026 John Hubert LLC. All rights reserved. See /LICENSE. -->
+<!-- Open Chambers — Copyright (c) 2026 John Hubert LLC. All rights reserved. See /LICENSE. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Floor</title>
+<title>Open Chambers</title>
 <meta name="description" content="Every member of the U.S. House and Senate: who they are, how long they've served, when they're up for election, and how they voted. Public records, plainly shown.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F3A5F'/%3E%3Cpath d='M7 22h18v2H7zm2-3h14v2H9zm2-9h10l2 7H9z' fill='%23fff'/%3E%3C/svg%3E">
@@ -86,7 +86,7 @@
 <body>
 <div class="wrap">
   <nav class="top">
-    <a class="logo" href="#/"><i></i>The Floor</a>
+    <a class="logo" href="#/"><i></i>Open Chambers</a>
     <div class="links" id="navlinks"><a href="#/house">House</a><a href="#/senate">Senate</a><a href="#/votes">Votes</a><a href="#/about">About</a></div>
   </nav>
   <main id="app"><div class="empty">Loading…</div></main>
@@ -107,8 +107,8 @@ const fmtDate = d => d ? new Date(d + "T12:00:00").toLocaleDateString(undefined,
 const seatLabel = m => m.chamber === "senate" ? `U.S. Senator, ${STATES[m.state] || m.state}` : `U.S. Representative, ${STATES[m.state] || m.state}${m.district ? " – District " + m.district : " – At large"}`;
 const partyName = m => m.party === "Democrat" ? "Democrat" : m.party;
 const POS = { Y:["Yea","yea"], N:["Nay","nay"], P:["Present","p"], "-":["Not voting","nv"] };
-function savedZip() { try { return localStorage.getItem("floor-zip") || ""; } catch (e) { return ""; } }
-function saveZip(z) { try { localStorage.setItem("floor-zip", z); } catch (e) {} }
+function savedZip() { try { return localStorage.getItem("openchambers-zip") || ""; } catch (e) { return ""; } }
+function saveZip(z) { try { localStorage.setItem("openchambers-zip", z); } catch (e) {} }
 
 async function load() {
   const [m, v, meta] = await Promise.all([fetch(DATA + "members.json").then(r => r.json()), fetch(DATA + "votes-index.json").then(r => r.json()).catch(() => []), fetch(DATA + "meta.json").then(r => r.json()).catch(() => ({}))]);
@@ -258,16 +258,16 @@ async function votePage(id) {
     <p class="hint" style="margin-top:14px">Source: ${v.chamber === "senate" ? `<a href="https://www.senate.gov/legislative/LIS/roll_call_votes/vote${v.congress}${v.session}/vote_${v.congress}_${v.session}_${String(v.number).padStart(5, "0")}.htm" rel="noopener">Senate.gov roll call ${v.number}</a>` : `<a href="https://clerk.house.gov/Votes/${v.date.slice(0, 4)}${v.number}" rel="noopener">House Clerk roll call ${v.number}</a>`}.</p>`;
 }
 function aboutPage() {
-  app.innerHTML = `<h2>About The Floor</h2><div class="prose">
-    <p>The Floor shows the public record of the United States Congress: every current member of the House and Senate, how long they have served, when their seat is next on the ballot, and how they voted on every recorded roll call. It adds no commentary, ratings, or endorsements. Where a number needs a method, the method is a published, citable one, and every vote links back to the official page it came from.</p>
+  app.innerHTML = `<h2>About Open Chambers</h2><div class="prose">
+    <p>Open Chambers shows the public record of the United States Congress: every current member of the House and Senate, how long they have served, when their seat is next on the ballot, and how they voted on every recorded roll call. It adds no commentary, ratings, or endorsements. Where a number needs a method, the method is a published, citable one, and every vote links back to the official page it came from.</p>
     <h3>Sources</h3>
     <p><b>Members, terms, and districts</b> come from the <a href="https://github.com/unitedstates/congress-legislators" rel="noopener">unitedstates/congress-legislators</a> open dataset, maintained by volunteers from official sources. <b>House votes</b> come from the <a href="https://clerk.house.gov/Votes" rel="noopener">Clerk of the House</a>. <b>Senate votes</b> come from the <a href="https://www.senate.gov/legislative/votes_new.htm" rel="noopener">Secretary of the Senate</a>. <b>ZIP-to-district</b> mapping uses Census ZCTA data via <a href="https://github.com/OpenSourceActivismTech/us-zipcodes-congress" rel="noopener">us-zipcodes-congress</a>; a ZIP can cross district lines, in which case all matching districts are shown. Photos are the official portraits collected by the <a href="https://github.com/unitedstates/images" rel="noopener">unitedstates/images</a> project.</p>
     <h3>Ideology score</h3>
-    <p>"Where they sit" uses <b>DW-NOMINATE</b>, a method developed by political scientists Keith Poole and Howard Rosenthal and maintained by <a href="https://voteview.com/about" rel="noopener">Voteview at UCLA</a>. It places every member on a scale from −1 to +1 based purely on how they vote relative to everyone else, with no labels applied by anyone. Negative scores are conventionally read as liberal and positive as conservative. The Floor shows the first dimension only and reports the number exactly as Voteview publishes it. Members with too few votes have no score yet.</p>
+    <p>"Where they sit" uses <b>DW-NOMINATE</b>, a method developed by political scientists Keith Poole and Howard Rosenthal and maintained by <a href="https://voteview.com/about" rel="noopener">Voteview at UCLA</a>. It places every member on a scale from −1 to +1 based purely on how they vote relative to everyone else, with no labels applied by anyone. Negative scores are conventionally read as liberal and positive as conservative. Open Chambers shows the first dimension only and reports the number exactly as Voteview publishes it. Members with too few votes have no score yet.</p>
     <h3>"With party" and "votes cast"</h3>
     <p>"With party" is the share of a member's yea or nay votes that matched the majority of their own party on that roll call; it is a measure of party loyalty, not ideology. "Votes cast" is the share of roll calls on which the member voted yea, nay, or present rather than missing the vote.</p>
     <h3>Privacy</h3>
-    <p>The Floor has no accounts and no tracking. If you enter a ZIP code it is stored on your device only, so the site can show how your representatives voted; clearing your browser data removes it. See the <a href="https://johnhubert.llc/privacy.html">John Hubert LLC privacy policy</a>.</p>
+    <p>Open Chambers has no accounts and no tracking. If you enter a ZIP code it is stored on your device only, so the site can show how your representatives voted; clearing your browser data removes it. See the <a href="https://johnhubert.llc/privacy.html">John Hubert LLC privacy policy</a>.</p>
     <h3>Updates</h3>
     <p>Data is rebuilt nightly. ${META.builtAt ? `This copy was built ${fmtDate(META.builtAt.slice(0, 10))} and covers the ${META.congress}th Congress: ${META.members} members, ${META.votes} roll-call votes (${META.house} House, ${META.senate} Senate).` : ""} Corrections: <a href="mailto:support@johnhubert.llc">support@johnhubert.llc</a>.</p></div>`;
 }

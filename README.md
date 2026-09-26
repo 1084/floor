@@ -1,4 +1,4 @@
-# The Floor
+# Open Chambers
 
 Every current member of the U.S. House and Senate — who they are, how long they've
 served, when they're next up for election, where they sit on the DW-NOMINATE
