@@ -1,0 +1,14 @@
+{
+  "name": "the-floor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The Floor: public profiles and voting records of every member of the U.S. House and Senate.",
+  "scripts": {
+    "build": "node pipeline/build.mjs",
+    "test": "node test/parsers.test.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

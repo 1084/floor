@@ -1,0 +1,293 @@
+<!doctype html>
+<!-- The Floor — Copyright (c) 2026 John Hubert LLC. All rights reserved. See /LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Floor</title>
+<meta name="description" content="Every member of the U.S. House and Senate: who they are, how long they've served, when they're up for election, and how they voted. Public records, plainly shown.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F3A5F'/%3E%3Cpath d='M7 22h18v2H7zm2-3h14v2H9zm2-9h10l2 7H9z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg:#F7F6F2; --surface:#FFFFFF; --surface-2:#EFEDE7; --ink:#1A1D21; --ink-2:#4A4F57; --ink-3:#7C818A; --line:#E1DFD8; --line-2:#CFCCC3;
+    --accent:#1F3A5F; --accent-ink:#fff; --accent-soft:#E4EAF2;
+    --dem:#3B6FB6; --rep:#C4423A; --ind:#6B8E23; --yea:#2E7D4F; --nay:#B23A3A; --nv:#A5A9B0;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif; --sans:"Public Sans","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171B; --surface:#1C2026; --surface-2:#242930; --ink:#ECEEF1; --ink-2:#B4B9C1; --ink-3:#7C818A; --line:#2C323A; --line-2:#3C434D; --accent:#8FB3E0; --accent-ink:#14171B; --accent-soft:#1E2A3A; --dem:#6D9BDC; --rep:#E06A62; --ind:#9BBF4A; --yea:#5BB47F; --nay:#E07070; --nv:#6C7079; } }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased }
+  a { color:var(--accent); text-decoration:none } a:hover { text-decoration:underline }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 20px 72px }
+  nav.top { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 0; border-bottom:1px solid var(--line); margin-bottom:28px }
+  nav.top .logo { font-family:var(--serif); font-weight:600; font-size:22px; color:var(--ink); letter-spacing:-.01em; display:flex; align-items:center; gap:10px }
+  nav.top .logo i { width:26px; height:26px; border-radius:6px; background:var(--accent); display:inline-block }
+  nav.top .links { display:flex; gap:18px; font-size:14px; font-weight:500 }
+  nav.top .links a { color:var(--ink-2) } nav.top .links a.on { color:var(--ink); border-bottom:2px solid var(--accent) }
+  h1 { font-family:var(--serif); font-weight:500; font-size:clamp(34px,5vw,50px); line-height:1.08; letter-spacing:-.015em; margin:0 0 12px; text-wrap:balance }
+  h2 { font-family:var(--serif); font-weight:600; font-size:26px; letter-spacing:-.01em; margin:0 0 12px }
+  h3 { font-size:15px; font-weight:600; letter-spacing:.02em; text-transform:uppercase; color:var(--ink-3); margin:26px 0 10px }
+  p.lede { font-size:19px; color:var(--ink-2); max-width:60ch; margin:0 0 22px; text-wrap:pretty }
+  .zipbox { display:flex; gap:10px; max-width:520px; margin:0 0 8px }
+  .zipbox input { flex:1; font:inherit; font-size:20px; font-family:var(--mono); letter-spacing:.06em; padding:14px 16px; border:1.5px solid var(--line-2); border-radius:12px; background:var(--surface); color:var(--ink) }
+  .zipbox input::placeholder { letter-spacing:0; font-family:var(--sans); font-size:17px; color:var(--ink-3) }
+  .btn { font:inherit; font-weight:600; padding:12px 18px; border-radius:12px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink); cursor:pointer; white-space:nowrap }
+  .btn.ghost { background:transparent; color:var(--accent) }
+  .btn.small { padding:7px 12px; font-size:14px; border-radius:9px }
+  .hint { font-size:14px; color:var(--ink-3); margin:0 0 30px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 18px }
+  .mcard { display:grid; grid-template-columns:64px 1fr; gap:14px; align-items:center; cursor:pointer; transition:border-color .15s }
+  .mcard:hover { border-color:var(--line-2) }
+  .photo { width:64px; height:78px; border-radius:8px; object-fit:cover; background:var(--surface-2); display:block }
+  .photo.lg { width:120px; height:146px; border-radius:12px }
+  .initials { display:grid; place-items:center; font-family:var(--serif); font-size:24px; color:var(--ink-3) }
+  .mcard .n { font-family:var(--serif); font-weight:600; font-size:19px; line-height:1.2 }
+  .mcard .s { font-size:14px; color:var(--ink-2); margin-top:2px }
+  .party { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px }
+  .party.D { background:var(--dem) } .party.R { background:var(--rep) } .party.I { background:var(--ind) }
+  .tag { display:inline-block; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; padding:3px 8px; border-radius:6px; background:var(--surface-2); color:var(--ink-2) }
+  .tag.yea { background:color-mix(in srgb,var(--yea) 16%,transparent); color:var(--yea) } .tag.nay { background:color-mix(in srgb,var(--nay) 16%,transparent); color:var(--nay) }
+  .tag.nv, .tag.p { color:var(--ink-3) }
+  table { border-collapse:collapse; width:100% } th, td { text-align:left; padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:middle; font-size:15px }
+  th { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); font-weight:600; cursor:pointer; white-space:nowrap; user-select:none }
+  th.on { color:var(--ink) } td.num { font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:14px }
+  tr.row { cursor:pointer } tr.row:hover td { background:var(--surface-2) }
+  .tbl { overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; align-items:center }
+  .filters select, .filters input { font:inherit; font-size:14px; padding:8px 10px; border:1px solid var(--line-2); border-radius:9px; background:var(--surface); color:var(--ink) }
+  .seg { display:inline-flex; border:1px solid var(--line-2); border-radius:9px; overflow:hidden } .seg button { font:inherit; font-size:14px; font-weight:500; padding:7px 12px; border:0; background:transparent; color:var(--ink-2); cursor:pointer } .seg button.on { background:var(--accent); color:var(--accent-ink) }
+  /* profile */
+  .profile { display:grid; grid-template-columns:120px 1fr; gap:22px; align-items:start; margin-bottom:8px }
+  .profile .who .n { font-family:var(--serif); font-weight:600; font-size:34px; line-height:1.1; letter-spacing:-.01em }
+  .profile .who .s { font-size:17px; color:var(--ink-2); margin-top:4px }
+  .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:18px 0 6px }
+  .fact { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px }
+  .fact .k { font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3) } .fact .v { font-family:var(--serif); font-size:24px; font-weight:600; margin-top:2px; line-height:1.1 } .fact .d { font-size:13px; color:var(--ink-2); margin-top:3px }
+  .spectrum { position:relative; height:54px; margin:6px 0 4px }
+  .spectrum .axis { position:absolute; left:0; right:0; top:26px; height:6px; border-radius:3px; background:linear-gradient(90deg,var(--dem),#B8BCC2 50%,var(--rep)) ; opacity:.55 }
+  .spectrum .tick { position:absolute; top:22px; width:2px; height:14px; background:var(--ink-3); opacity:.35; border-radius:1px }
+  .spectrum .me { position:absolute; top:14px; width:18px; height:30px; margin-left:-9px; border-radius:9px; border:2.5px solid var(--surface); box-shadow:0 1px 6px rgba(0,0,0,.25) }
+  .spectrum .lbl { position:absolute; top:44px; font-size:11.5px; color:var(--ink-3); letter-spacing:.04em; text-transform:uppercase } .spectrum .lbl.r { right:0 } .spectrum .lbl.c { left:50%; transform:translateX(-50%) }
+  .bars { display:grid; gap:8px; margin:8px 0 } .bar { display:grid; grid-template-columns:110px 1fr 60px; gap:10px; align-items:center; font-size:14px } .bar .track { height:12px; border-radius:6px; background:var(--surface-2); overflow:hidden; display:flex } .bar .track i { display:block; height:100% } .bar .n { font-family:var(--mono); font-size:13px; text-align:right; color:var(--ink-2) }
+  .vote { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); cursor:pointer } .vote:hover .q { text-decoration:underline }
+  .vote .q { font-weight:600 } .vote .d { font-size:14px; color:var(--ink-2); margin-top:2px } .vote .m { font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-top:3px }
+  .empty { color:var(--ink-3); padding:28px 12px; text-align:center; border:1px dashed var(--line-2); border-radius:12px; font-size:15px }
+  .note { font-size:14px; color:var(--ink-2); background:var(--surface-2); border-radius:10px; padding:10px 14px; margin:12px 0 }
+  .crumbs { font-size:14px; color:var(--ink-3); margin-bottom:14px } .crumbs a { color:var(--ink-2) }
+  footer { border-top:1px solid var(--line); margin-top:44px; padding-top:16px; font-size:13.5px; color:var(--ink-3); display:flex; flex-wrap:wrap; gap:8px 22px; justify-content:space-between }
+  .prose { max-width:68ch; font-size:16.5px } .prose p { margin:0 0 14px }
+  @media (max-width:640px) { .profile { grid-template-columns:88px 1fr } .photo.lg { width:88px; height:108px } .profile .who .n { font-size:27px } nav.top .links { gap:12px; font-size:13px } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top">
+    <a class="logo" href="#/"><i></i>The Floor</a>
+    <div class="links" id="navlinks"><a href="#/house">House</a><a href="#/senate">Senate</a><a href="#/votes">Votes</a><a href="#/about">About</a></div>
+  </nav>
+  <main id="app"><div class="empty">Loading…</div></main>
+  <footer><span>© 2026 John Hubert LLC · <a href="https://johnhubert.llc/">johnhubert.llc</a> · <a href="https://johnhubert.llc/privacy.html">Privacy</a></span><span id="built"></span></footer>
+</div>
+
+<script>
+/* ===================== data ===================== */
+const DATA = "./data/";
+let MEMBERS = [], BY_ID = {}, VOTES = [], META = {}, ZIP = null;
+const memberVotesCache = {}, voteCache = {};
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const STATES = { AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia",PR:"Puerto Rico",GU:"Guam",VI:"U.S. Virgin Islands",AS:"American Samoa",MP:"Northern Mariana Islands" };
+const photo = id => `https://unitedstates.github.io/images/congress/225x275/${id}.jpg`;
+const fmtDate = d => d ? new Date(d + "T12:00:00").toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" }) : "";
+const seatLabel = m => m.chamber === "senate" ? `U.S. Senator, ${STATES[m.state] || m.state}` : `U.S. Representative, ${STATES[m.state] || m.state}${m.district ? " – District " + m.district : " – At large"}`;
+const partyName = m => m.party === "Democrat" ? "Democrat" : m.party;
+const POS = { Y:["Yea","yea"], N:["Nay","nay"], P:["Present","p"], "-":["Not voting","nv"] };
+function savedZip() { try { return localStorage.getItem("floor-zip") || ""; } catch (e) { return ""; } }
+function saveZip(z) { try { localStorage.setItem("floor-zip", z); } catch (e) {} }
+
+async function load() {
+  const [m, v, meta] = await Promise.all([fetch(DATA + "members.json").then(r => r.json()), fetch(DATA + "votes-index.json").then(r => r.json()).catch(() => []), fetch(DATA + "meta.json").then(r => r.json()).catch(() => ({}))]);
+  MEMBERS = m; BY_ID = Object.fromEntries(m.map(x => [x.id, x])); VOTES = v; META = meta;
+  if (META.builtAt) $("#built").textContent = `Data updated ${fmtDate(META.builtAt.slice(0, 10))} · ${META.congress}th Congress`;
+  route();
+}
+async function zipLookup(z) { if (!ZIP) ZIP = await fetch(DATA + "zip.json").then(r => r.json()); return ZIP[z] || null; }
+async function memberVotes(id) { return memberVotesCache[id] ||= await fetch(`${DATA}members/${id}.json`).then(r => r.json()).then(j => j.votes).catch(() => []); }
+async function voteDetail(id) { return voteCache[id] ||= await fetch(`${DATA}votes/${id}.json`).then(r => r.json()).catch(() => null); }
+
+/* ===================== components ===================== */
+function photoEl(m, lg) {
+  return `<img class="photo ${lg ? "lg" : ""}" src="${photo(m.id)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'photo initials ${lg ? "lg" : ""}',textContent:'${esc(m.first[0] + m.last[0])}'}))">`;
+}
+function memberCard(m, extra) {
+  return `<a class="card mcard" href="#/member/${m.id}">${photoEl(m)}<div><div class="n">${esc(m.name)}</div><div class="s"><span class="party ${m.partyCode}"></span>${esc(partyName(m))} · ${esc(seatLabel(m))}</div>${extra ? `<div class="s">${extra}</div>` : ""}</div></a>`;
+}
+function spectrum(m) {
+  if (!m.nominate) return `<div class="note">No ideology score yet for this member. Voteview publishes DW-NOMINATE scores once a member has cast enough roll-call votes.</div>`;
+  const x = (m.nominate.dim1 + 1) / 2 * 100;
+  const peers = MEMBERS.filter(p => p.chamber === m.chamber && p.nominate);
+  const ticks = peers.map(p => `<span class="tick" style="left:${(p.nominate.dim1 + 1) / 2 * 100}%"></span>`).join("");
+  const col = m.partyCode === "D" ? "var(--dem)" : m.partyCode === "R" ? "var(--rep)" : "var(--ind)";
+  const rank = peers.filter(p => p.nominate.dim1 < m.nominate.dim1).length;
+  return `<div class="spectrum"><div class="axis"></div>${ticks}<span class="me" style="left:${x}%;background:${col}" title="${m.nominate.dim1.toFixed(3)}"></span><span class="lbl">More liberal</span><span class="lbl c">Center</span><span class="lbl r">More conservative</span></div>
+  <div class="hint" style="margin:0">Score ${m.nominate.dim1.toFixed(2)} on the DW-NOMINATE first dimension (−1 to +1). ${rank + 1} of ${peers.length} ${m.chamber === "senate" ? "senators" : "representatives"}, counting from the left. Each small tick is another member of the ${m.chamber === "senate" ? "Senate" : "House"}. <a href="#/about">How this is measured</a>.</div>`;
+}
+function partyBars(bp) {
+  const row = (label, cls, b) => { const t = b.Y + b.N + b.P + b["-"]; if (!t) return ""; return `<div class="bar"><span><span class="party ${cls}"></span>${label}</span><div class="track"><i style="width:${b.Y / t * 100}%;background:var(--yea)"></i><i style="width:${b.N / t * 100}%;background:var(--nay)"></i><i style="width:${(b.P + b["-"]) / t * 100}%;background:var(--nv)"></i></div><span class="n">${b.Y}–${b.N}</span></div>`; };
+  return `<div class="bars">${row("Democrats", "D", bp.D)}${row("Republicans", "R", bp.R)}${row("Independents", "I", bp.I)}</div><div class="hint" style="margin:0">Green = yea, red = nay, grey = present or not voting.</div>`;
+}
+function voteRow(v, pos) {
+  const p = pos ? POS[pos] : null;
+  return `<a class="vote" href="#/vote/${v.id}"><div><div class="q">${esc(v.question || "Vote")}${v.bill ? ` · ${esc(v.bill)}` : ""}</div><div class="d">${esc(v.description || "")}</div><div class="m">${v.chamber === "senate" ? "Senate" : "House"} · ${fmtDate(v.date)} · ${esc(v.result || "")} · ${v.tally.yea}–${v.tally.nay}</div></div>${p ? `<span class="tag ${p[1]}">${p[0]}</span>` : ""}</a>`;
+}
+function setNav(path) { document.querySelectorAll("#navlinks a").forEach(a => a.classList.toggle("on", path.startsWith(a.getAttribute("href")))); }
+
+/* ===================== pages ===================== */
+function home() {
+  const z = savedZip();
+  const recent = VOTES.slice(0, 8);
+  app.innerHTML = `
+    <h1>Every member of Congress, on the record.</h1>
+    <p class="lede">Who represents you, how long they've served, when they're next up for election, and how they voted, drawn from the official House and Senate records and shown without commentary.</p>
+    <form class="zipbox" id="zipform"><input id="zip" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="Your ZIP code" value="${esc(z)}" aria-label="ZIP code"><button class="btn" type="submit">Find my representatives</button></form>
+    <p class="hint">Your ZIP is kept on this device only. Or browse the <a href="#/house">House</a>, the <a href="#/senate">Senate</a>, or <a href="#/state/VA">a state</a>.</p>
+    <h3>Latest roll-call votes</h3>
+    ${recent.length ? recent.map(v => voteRow(v)).join("") + `<p style="margin-top:12px"><a href="#/votes">All votes →</a></p>` : `<div class="empty">Vote records appear after the first nightly data update.</div>`}`;
+  $("#zipform").onsubmit = e => { e.preventDefault(); const v = $("#zip").value.trim(); if (/^\d{5}$/.test(v)) location.hash = "#/zip/" + v; };
+}
+async function zipPage(z) {
+  app.innerHTML = `<div class="empty">Looking up ${esc(z)}…</div>`;
+  const cds = await zipLookup(z);
+  if (!cds) { app.innerHTML = `<h2>No district found for ${esc(z)}</h2><p class="note">That ZIP code isn't in our map. Try a neighboring ZIP, or browse by <a href="#/house">state</a>.</p>`; return; }
+  saveZip(z);
+  const states = [...new Set(cds.map(c => c.split("-")[0]))];
+  const reps = cds.map(c => { const [st, d] = c.split("-"); return MEMBERS.find(m => m.chamber === "house" && m.state === st && (m.district || 0) === +d); }).filter(Boolean);
+  const sens = MEMBERS.filter(m => m.chamber === "senate" && states.includes(m.state)).sort((a, b) => a.state.localeCompare(b.state) || a.last.localeCompare(b.last));
+  app.innerHTML = `<div class="crumbs"><a href="#/">Home</a> › ZIP ${esc(z)}</div>
+    <h2>Your representatives</h2>
+    ${cds.length > 1 ? `<p class="note">ZIP ${esc(z)} spans ${cds.length} districts (${cds.map(esc).join(", ")}). All are shown; your street address decides which one is yours.</p>` : `<p class="hint">${esc(STATES[states[0]] || states[0])} – District ${esc(cds[0].split("-")[1] === "0" ? "at large" : cds[0].split("-")[1])}</p>`}
+    <h3>House</h3><div class="grid">${reps.length ? reps.map(m => memberCard(m, `Next election ${m.nextElection}`)).join("") : `<div class="empty">Seat currently vacant or not in the data.</div>`}</div>
+    <h3>Senate</h3><div class="grid">${sens.map(m => memberCard(m, `Next election ${m.nextElection}`)).join("")}</div>`;
+}
+function statePage(st) {
+  const ms = MEMBERS.filter(m => m.state === st);
+  app.innerHTML = `<div class="crumbs"><a href="#/">Home</a> › ${esc(STATES[st] || st)}</div><h2>${esc(STATES[st] || st)}</h2>
+    <h3>Senate</h3><div class="grid">${ms.filter(m => m.chamber === "senate").map(m => memberCard(m, `Next election ${m.nextElection}`)).join("") || `<div class="empty">No senators (not a state).</div>`}</div>
+    <h3>House</h3><div class="grid">${ms.filter(m => m.chamber === "house").sort((a, b) => (a.district || 0) - (b.district || 0)).map(m => memberCard(m, `Next election ${m.nextElection}`)).join("")}</div>`;
+}
+let listState = { sort: "state", dir: 1, q: "", party: "", state: "" };
+function listPage(chamber) {
+  const title = chamber === "senate" ? "The Senate" : "The House of Representatives";
+  const opts = Object.keys(STATES).filter(s => MEMBERS.some(m => m.chamber === chamber && m.state === s)).map(s => `<option value="${s}" ${listState.state === s ? "selected" : ""}>${STATES[s]}</option>`).join("");
+  app.innerHTML = `<h2>${title}</h2>
+    <div class="filters"><input id="q" placeholder="Search by name" value="${esc(listState.q)}"><select id="st"><option value="">All states</option>${opts}</select>
+    <span class="seg" id="party">${["", "D", "R", "I"].map(p => `<button data-p="${p}" class="${listState.party === p ? "on" : ""}">${p || "All"}</button>`).join("")}</span></div>
+    <div class="tbl"><table><thead><tr>${[["name", "Member"], ["state", "State"], ["party", "Party"], ["yearsInOffice", "Years"], ["nextElection", "Next election"], ["nominate", "Ideology"], ["partyUnity", "With party"]].map(([k, l]) => `<th data-k="${k}" class="${listState.sort === k ? "on" : ""}">${l}${listState.sort === k ? (listState.dir > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="hint" style="margin-top:10px">Ideology is the DW-NOMINATE first-dimension score from Voteview (−1 liberal … +1 conservative). "With party" is the share of yea/nay votes cast with the member's own party majority. <a href="#/about">Methodology</a>.</p>`;
+  const render = () => {
+    let ms = MEMBERS.filter(m => m.chamber === chamber);
+    if (listState.q) { const q = listState.q.toLowerCase(); ms = ms.filter(m => m.name.toLowerCase().includes(q)); }
+    if (listState.party) ms = ms.filter(m => m.partyCode === listState.party);
+    if (listState.state) ms = ms.filter(m => m.state === listState.state);
+    const val = m => listState.sort === "name" ? m.last : listState.sort === "nominate" ? (m.nominate ? m.nominate.dim1 : 99) : listState.sort === "partyUnity" ? (m.votes.partyUnity ?? -1) : listState.sort === "party" ? m.partyCode : m[listState.sort];
+    ms.sort((a, b) => { const x = val(a), y = val(b); return (x < y ? -1 : x > y ? 1 : 0) * listState.dir || a.last.localeCompare(b.last); });
+    $("#rows").innerHTML = ms.map(m => `<tr class="row" data-id="${m.id}"><td><span class="party ${m.partyCode}"></span><b>${esc(m.name)}</b>${m.chamber === "house" ? `<span class="hint" style="margin:0"> · ${m.district ? "District " + m.district : "At large"}</span>` : ""}</td><td>${m.state}</td><td>${m.partyCode}</td><td class="num">${m.yearsInOffice}</td><td class="num">${m.nextElection}</td><td class="num">${m.nominate ? m.nominate.dim1.toFixed(2) : "—"}</td><td class="num">${m.votes.partyUnity != null ? m.votes.partyUnity + "%" : "—"}</td></tr>`).join("");
+    document.querySelectorAll("#rows tr").forEach(tr => tr.onclick = () => location.hash = "#/member/" + tr.dataset.id);
+  };
+  render();
+  $("#q").oninput = e => { listState.q = e.target.value; render(); };
+  $("#st").onchange = e => { listState.state = e.target.value; render(); };
+  document.querySelectorAll("#party button").forEach(b => b.onclick = () => { listState.party = b.dataset.p; document.querySelectorAll("#party button").forEach(x => x.classList.toggle("on", x === b)); render(); });
+  document.querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; if (listState.sort === k) listState.dir *= -1; else { listState.sort = k; listState.dir = 1; } listPage(chamber); });
+}
+async function memberPage(id) {
+  const m = BY_ID[id]; if (!m) { app.innerHTML = `<div class="empty">Member not found.</div>`; return; }
+  const v = m.votes;
+  app.innerHTML = `<div class="crumbs"><a href="#/">Home</a> › <a href="#/${m.chamber}">${m.chamber === "senate" ? "Senate" : "House"}</a> › <a href="#/state/${m.state}">${esc(STATES[m.state] || m.state)}</a></div>
+    <div class="profile">${photoEl(m, true)}<div class="who"><div class="n">${esc(m.name)}</div><div class="s"><span class="party ${m.partyCode}"></span>${esc(partyName(m))} · ${esc(seatLabel(m))}</div>
+      <div class="hint" style="margin:8px 0 0">${m.url ? `<a href="${esc(m.url)}" rel="noopener">Official website</a> · ` : ""}${m.phone ? `${esc(m.phone)} · ` : ""}${m.ids.wikipedia ? `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(m.ids.wikipedia)}" rel="noopener">Wikipedia</a> · ` : ""}<a href="https://bioguide.congress.gov/search/bio/${m.id}" rel="noopener">Bioguide</a></div></div></div>
+    <div class="facts">
+      <div class="fact"><div class="k">In office since</div><div class="v">${m.since.slice(0, 4)}</div><div class="d">${m.yearsInOffice} years · ${m.termsServed} term${m.termsServed === 1 ? "" : "s"} in Congress</div></div>
+      <div class="fact"><div class="k">Next election</div><div class="v">${m.nextElection}</div><div class="d">Current term ends ${fmtDate(m.termEnd)}${m.senateClass ? ` · Senate class ${m.senateClass}` : ""}</div></div>
+      <div class="fact"><div class="k">Votes with party</div><div class="v">${v.partyUnity != null ? v.partyUnity + "%" : "—"}</div><div class="d">${v.partyVotes ? `of ${v.partyVotes} yea/nay votes` : "no votes recorded yet"}</div></div>
+      <div class="fact"><div class="k">Votes cast</div><div class="v">${v.attendance != null ? v.attendance + "%" : "—"}</div><div class="d">${v.total ? `${v.total - v.missed} of ${v.total} roll calls` : "no votes recorded yet"}</div></div>
+    </div>
+    <h3>Where they sit</h3>${spectrum(m)}
+    <h3>Voting record</h3><div id="mv"><div class="empty">Loading votes…</div></div>`;
+  const mv = await memberVotes(id);
+  const pos = Object.fromEntries(mv);
+  const list = VOTES.filter(x => pos[x.id] !== undefined);
+  let shown = 30;
+  const render = () => { $("#mv").innerHTML = list.length ? list.slice(0, shown).map(x => voteRow(x, pos[x.id])).join("") + (shown < list.length ? `<p style="margin-top:12px"><button class="btn ghost small" id="more">Show more (${list.length - shown} left)</button></p>` : "") : `<div class="empty">No roll-call votes recorded for this member yet.</div>`; const b = $("#more"); if (b) b.onclick = () => { shown += 50; render(); }; };
+  render();
+}
+let voteFilter = { chamber: "", q: "" };
+function votesPage() {
+  app.innerHTML = `<h2>Roll-call votes</h2><div class="filters"><span class="seg" id="ch">${[["", "Both"], ["house", "House"], ["senate", "Senate"]].map(([k, l]) => `<button data-c="${k}" class="${voteFilter.chamber === k ? "on" : ""}">${l}</button>`).join("")}</span><input id="vq" placeholder="Search bills and questions" value="${esc(voteFilter.q)}" style="flex:1;min-width:200px"></div><div id="vl"></div>`;
+  let shown = 40;
+  const render = () => { let vs = VOTES; if (voteFilter.chamber) vs = vs.filter(v => v.chamber === voteFilter.chamber); if (voteFilter.q) { const q = voteFilter.q.toLowerCase(); vs = vs.filter(v => (v.question + " " + v.description + " " + v.bill).toLowerCase().includes(q)); }
+    $("#vl").innerHTML = vs.length ? vs.slice(0, shown).map(v => voteRow(v)).join("") + (shown < vs.length ? `<p style="margin-top:12px"><button class="btn ghost small" id="more">Show more (${vs.length - shown} left)</button></p>` : "") : `<div class="empty">${VOTES.length ? "No votes match." : "Vote records appear after the first nightly data update."}</div>`; const b = $("#more"); if (b) b.onclick = () => { shown += 60; render(); }; };
+  render();
+  $("#vq").oninput = e => { voteFilter.q = e.target.value; shown = 40; render(); };
+  document.querySelectorAll("#ch button").forEach(b => b.onclick = () => { voteFilter.chamber = b.dataset.c; document.querySelectorAll("#ch button").forEach(x => x.classList.toggle("on", x === b)); shown = 40; render(); });
+}
+async function votePage(id) {
+  app.innerHTML = `<div class="empty">Loading vote…</div>`;
+  const v = await voteDetail(id); if (!v) { app.innerHTML = `<div class="empty">Vote not found.</div>`; return; }
+  const z = savedZip(); let mine = [];
+  if (z) { const cds = await zipLookup(z); if (cds) { const states = [...new Set(cds.map(c => c.split("-")[0]))]; mine = MEMBERS.filter(m => (m.chamber === "senate" && states.includes(m.state)) || (m.chamber === "house" && cds.includes(`${m.state}-${m.district || 0}`))); } }
+  const mineRows = mine.filter(m => m.chamber === v.chamber && v.positions[m.id] !== undefined);
+  const groups = { Y: [], N: [], P: [], "-": [] };
+  for (const [mid, p] of Object.entries(v.positions)) { const m = BY_ID[mid]; if (m) groups[p].push(m); }
+  for (const g of Object.values(groups)) g.sort((a, b) => a.last.localeCompare(b.last));
+  const chip = m => `<a href="#/member/${m.id}" style="display:inline-block;margin:3px 8px 3px 0;font-size:14px"><span class="party ${m.partyCode}"></span>${esc(m.name)} <span class="hint" style="margin:0">(${m.state}${m.district ? "-" + m.district : ""})</span></a>`;
+  app.innerHTML = `<div class="crumbs"><a href="#/">Home</a> › <a href="#/votes">Votes</a> › ${v.chamber === "senate" ? "Senate" : "House"} roll call ${v.number}</div>
+    <h2>${esc(v.question || "Vote")}${v.bill ? ` · ${esc(v.bill)}` : ""}</h2>
+    <p class="lede" style="font-size:17px">${esc(v.description || "")}</p>
+    <div class="facts"><div class="fact"><div class="k">Result</div><div class="v" style="font-size:20px">${esc(v.result || "—")}</div><div class="d">${fmtDate(v.date)}${v.type ? " · " + esc(v.type) : ""}</div></div>
+      <div class="fact"><div class="k">Yea</div><div class="v" style="color:var(--yea)">${v.tally.yea}</div></div><div class="fact"><div class="k">Nay</div><div class="v" style="color:var(--nay)">${v.tally.nay}</div></div><div class="fact"><div class="k">Not voting</div><div class="v" style="color:var(--ink-3)">${v.tally.nv + v.tally.present}</div><div class="d">${v.tally.present ? v.tally.present + " present" : ""}</div></div></div>
+    ${mineRows.length ? `<h3>How your ${v.chamber === "senate" ? "senators" : "representative"} voted (ZIP ${esc(z)})</h3><div class="grid">${mineRows.map(m => memberCard(m, `<span class="tag ${POS[v.positions[m.id]][1]}">${POS[v.positions[m.id]][0]}</span>`)).join("")}</div>` : ""}
+    <h3>By party</h3>${partyBars(v.byParty)}
+    <h3>Every member</h3>
+    ${["Y", "N", "P", "-"].filter(k => groups[k].length).map(k => `<div class="card" style="margin-bottom:10px"><b>${POS[k][0]} · ${groups[k].length}</b><div style="margin-top:6px">${groups[k].map(chip).join("")}</div></div>`).join("")}
+    <p class="hint" style="margin-top:14px">Source: ${v.chamber === "senate" ? `<a href="https://www.senate.gov/legislative/LIS/roll_call_votes/vote${v.congress}${v.session}/vote_${v.congress}_${v.session}_${String(v.number).padStart(5, "0")}.htm" rel="noopener">Senate.gov roll call ${v.number}</a>` : `<a href="https://clerk.house.gov/Votes/${v.date.slice(0, 4)}${v.number}" rel="noopener">House Clerk roll call ${v.number}</a>`}.</p>`;
+}
+function aboutPage() {
+  app.innerHTML = `<h2>About The Floor</h2><div class="prose">
+    <p>The Floor shows the public record of the United States Congress: every current member of the House and Senate, how long they have served, when their seat is next on the ballot, and how they voted on every recorded roll call. It adds no commentary, ratings, or endorsements. Where a number needs a method, the method is a published, citable one, and every vote links back to the official page it came from.</p>
+    <h3>Sources</h3>
+    <p><b>Members, terms, and districts</b> come from the <a href="https://github.com/unitedstates/congress-legislators" rel="noopener">unitedstates/congress-legislators</a> open dataset, maintained by volunteers from official sources. <b>House votes</b> come from the <a href="https://clerk.house.gov/Votes" rel="noopener">Clerk of the House</a>. <b>Senate votes</b> come from the <a href="https://www.senate.gov/legislative/votes_new.htm" rel="noopener">Secretary of the Senate</a>. <b>ZIP-to-district</b> mapping uses Census ZCTA data via <a href="https://github.com/OpenSourceActivismTech/us-zipcodes-congress" rel="noopener">us-zipcodes-congress</a>; a ZIP can cross district lines, in which case all matching districts are shown. Photos are the official portraits collected by the <a href="https://github.com/unitedstates/images" rel="noopener">unitedstates/images</a> project.</p>
+    <h3>Ideology score</h3>
+    <p>"Where they sit" uses <b>DW-NOMINATE</b>, a method developed by political scientists Keith Poole and Howard Rosenthal and maintained by <a href="https://voteview.com/about" rel="noopener">Voteview at UCLA</a>. It places every member on a scale from −1 to +1 based purely on how they vote relative to everyone else, with no labels applied by anyone. Negative scores are conventionally read as liberal and positive as conservative. The Floor shows the first dimension only and reports the number exactly as Voteview publishes it. Members with too few votes have no score yet.</p>
+    <h3>"With party" and "votes cast"</h3>
+    <p>"With party" is the share of a member's yea or nay votes that matched the majority of their own party on that roll call; it is a measure of party loyalty, not ideology. "Votes cast" is the share of roll calls on which the member voted yea, nay, or present rather than missing the vote.</p>
+    <h3>Privacy</h3>
+    <p>The Floor has no accounts and no tracking. If you enter a ZIP code it is stored on your device only, so the site can show how your representatives voted; clearing your browser data removes it. See the <a href="https://johnhubert.llc/privacy.html">John Hubert LLC privacy policy</a>.</p>
+    <h3>Updates</h3>
+    <p>Data is rebuilt nightly. ${META.builtAt ? `This copy was built ${fmtDate(META.builtAt.slice(0, 10))} and covers the ${META.congress}th Congress: ${META.members} members, ${META.votes} roll-call votes (${META.house} House, ${META.senate} Senate).` : ""} Corrections: <a href="mailto:support@johnhubert.llc">support@johnhubert.llc</a>.</p></div>`;
+}
+
+/* ===================== router ===================== */
+function route() {
+  const h = location.hash || "#/"; const parts = h.slice(2).split("/");
+  setNav(h); window.scrollTo(0, 0);
+  if (!parts[0]) return home();
+  if (parts[0] === "zip") return zipPage(parts[1]);
+  if (parts[0] === "state") return statePage((parts[1] || "").toUpperCase());
+  if (parts[0] === "house" || parts[0] === "senate") return listPage(parts[0]);
+  if (parts[0] === "member") return memberPage(parts[1]);
+  if (parts[0] === "votes") return votesPage();
+  if (parts[0] === "vote") return votePage(parts[1]);
+  if (parts[0] === "about") return aboutPage();
+  home();
+}
+window.addEventListener("hashchange", route);
+load().catch(e => { app.innerHTML = `<div class="empty">Couldn't load data (${esc(e.message)}). Try again in a moment.</div>`; });
+</script>
+</body>
+</html>
