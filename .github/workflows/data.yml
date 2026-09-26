@@ -1,0 +1,38 @@
+# Rebuilds docs/data from the public sources every night and commits the result.
+# GitHub Pages (Settings → Pages → Deploy from branch: main, /docs) then serves it.
+name: Refresh data
+
+on:
+  schedule:
+    - cron: "17 7 * * *"     # 07:17 UTC daily (~3 AM Eastern), after the previous day's votes are posted
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: data-refresh
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+      - name: Build data
+        env:
+          CONGRESS: "119"
+          SESSIONS: "1,2"
+        run: npm run build
+      - name: Commit refreshed data
+        run: |
+          git config user.name "John Hubert LLC"
+          git config user.email "support@johnhubert.llc"
+          git add docs/data
+          if git diff --cached --quiet; then echo "no changes"; else
+            git commit -m "Data refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
