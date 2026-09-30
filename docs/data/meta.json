@@ -4,11 +4,11 @@
     1,
     2
   ],
-  "builtAt": "2026-09-29T14:06:51.795Z",
+  "builtAt": "2026-09-30T13:48:41.341Z",
   "members": 539,
-  "votes": 1581,
+  "votes": 1292,
   "house": 676,
-  "senate": 905,
+  "senate": 616,
   "nominate": 537,
   "sources": {
     "legislators": "https://github.com/unitedstates/congress-legislators",
