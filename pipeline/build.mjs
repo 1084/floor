@@ -12,7 +12,7 @@
 // Set CONGRESS (default 119) and SESSIONS (default "1,2"). Network failures for a
 // single source are logged and skipped, so one broken feed doesn't block the rest.
 
-import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
@@ -112,13 +112,14 @@ async function houseSession(session) {
   log(`house session ${session} (${year}): ${n} roll calls`);
 }
 async function senateSession(session) {
-  const menu = await fetchText(`https://www.senate.gov/legislative/LIS/roll_call_lists/vote_menu_${CONGRESS}_${session}.xml`, { cache: false });
-  if (!menu) { log(`senate session ${session}: no menu`); return; }
-  const list = parseSenateMenu(menu); let n = 0;
+  const menu = await fetchText(`https://www.senate.gov/legislative/LIS/roll_call_lists/vote_menu_${CONGRESS}_${session}.xml`, { cache: false, retries: 5 });
+  if (!menu) throw new Error(`senate session ${session}: menu unavailable`);
+  const list = parseSenateMenu(menu); let n = 0, errors = 0;
+  if (!list.length) throw new Error(`senate session ${session}: menu parsed to zero votes`);
   for (const item of list) {
     const url = `https://www.senate.gov/legislative/LIS/roll_call_votes/vote${CONGRESS}${session}/vote_${CONGRESS}_${session}_${String(item.number).padStart(5, "0")}.xml`;
     let xml = null;
-    try { xml = await fetchText(url); } catch (e) { log("senate fetch error", item.number, e.message); continue; }
+    try { xml = await fetchText(url, { retries: 4 }); } catch (e) { log("senate fetch error", item.number, e.message); errors++; continue; }
     if (!xml) continue;
     const v = parseSenateVote(xml); if (!v) continue;
     // map LIS ids → bioguide
@@ -126,12 +127,32 @@ async function senateSession(session) {
     v.positions = pos; if (!v.description) v.description = item.title || item.issue; if (!v.question) v.question = item.question;
     votes.push(v); n++;
   }
-  log(`senate session ${session}: ${n} roll calls`);
+  log(`senate session ${session}: ${n} roll calls${errors ? `, ${errors} fetch errors (regression guard will restore from the previous build)` : ""}`);
 }
 for (const s of SESSIONS) {
   try { await houseSession(s); } catch (e) { log("house session failed:", e.message); }
   try { await senateSession(s); } catch (e) { log("senate session failed:", e.message); }
 }
+// Safety net: a source outage must not shrink the published record. For each chamber/session, if this run
+// found fewer votes than the previous build, bring the missing ones back from the previously committed files.
+try {
+  // The per-vote files from every previous build are still in docs/data/votes (builds add, never delete).
+  const prevIds = readdirSync(resolve(OUT, "votes")).filter(f => f.endsWith(".json")).map(f => f.slice(0, -5));
+  const have = new Set(votes.map(v => v.id));
+  const groups = {};
+  for (const id of prevIds) { const k = id.split("-").slice(0, 3).join("-"); (groups[k] ||= []).push(id); }
+  for (const [k, ids] of Object.entries(groups)) {
+    const now = votes.filter(v => v.id.startsWith(k + "-")).length;
+    if (now >= ids.length) continue;
+    let restored = 0;
+    for (const id of ids) {
+      if (have.has(id)) continue;
+      const f = resolve(OUT, "votes", id + ".json"); if (!existsSync(f)) continue;
+      const v = JSON.parse(readFileSync(f, "utf8")); delete v.byParty; votes.push(v); have.add(id); restored++;
+    }
+    log(`WARNING ${k}: this run found ${now} votes, previous build had ${ids.length}; restored ${restored} from the previous build (source outage?)`);
+  }
+} catch (e) { log("regression guard failed:", e.message); }
 votes.sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.number - a.number);
 
 /* ---------- Per-vote party breakdown + per-member tallies ---------- */
