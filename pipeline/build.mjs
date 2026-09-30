@@ -119,6 +119,7 @@ async function senateSession(session) {
   for (const item of list) {
     const url = `https://www.senate.gov/legislative/LIS/roll_call_votes/vote${CONGRESS}${session}/vote_${CONGRESS}_${session}_${String(item.number).padStart(5, "0")}.xml`;
     let xml = null;
+    if (!existsSync(resolve(CACHE, url.replace(/[^a-z0-9]+/gi, "_").slice(-150)))) await new Promise(r => setTimeout(r, 250)); // be polite: senate.gov rate-limits bursts with 403
     try { xml = await fetchText(url, { retries: 4 }); } catch (e) { log("senate fetch error", item.number, e.message); errors++; continue; }
     if (!xml) continue;
     const v = parseSenateVote(xml); if (!v) continue;
