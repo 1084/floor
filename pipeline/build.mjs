@@ -46,8 +46,16 @@ async function fetchText(url, { cache = true, retries = 2 } = {}) {
 log("legislators…");
 const legisYaml = await fetchText("https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-current.yaml", { cache: false });
 const socialYaml = await fetchText("https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-social-media.yaml", { cache: false }).catch(() => "");
+// District offices (same project). Optional: if the file is unavailable, members simply have offices: [].
+const officesYaml = await fetchText("https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-district-offices.yaml", { cache: false }).catch(e => { log("district offices unavailable:", e.message); return ""; });
 const legis = yaml.load(legisYaml);
 const social = Object.fromEntries((yaml.load(socialYaml || "[]") || []).map(s => [s.id.bioguide, s.social || {}]));
+const offices = Object.fromEntries((yaml.load(officesYaml || "[]") || []).map(o => [o.id.bioguide, (o.offices || []).map(x => ({
+  city: x.city || null, state: x.state || null,
+  address: [x.address, x.suite, x.building].filter(Boolean).join(", ") || null, zip: x.zip || null,
+  phone: x.phone || null, fax: x.fax || null, hours: x.hours || null,
+  lat: x.latitude ?? null, lon: x.longitude ?? null,
+})).filter(x => x.city || x.phone)]));
 const lisToBio = {};
 const members = legis.map(l => {
   const terms = l.terms; const cur = terms[terms.length - 1]; const first = terms[0];
@@ -72,7 +80,9 @@ const members = legis.map(l => {
     termsServed: terms.length,
     termEnd, nextElection: electionYear,
     url: cur.url || null, phone: cur.phone || null, office: cur.office || null,
+    address: cur.address || null,                 // full DC mailing address, e.g. "231 Russell Senate Office Building Washington DC 20510"
     contactForm: cur.contact_form || null,
+    offices: offices[l.id.bioguide] || [],        // district/state offices: city, address, phone, hours, lat/lon
     twitter: social[l.id.bioguide]?.twitter || null,
     ids: { lis: l.id.lis || null, icpsr: l.id.icpsr || null, govtrack: l.id.govtrack || null, wikipedia: l.id.wikipedia || null, opensecrets: l.id.opensecrets || null },
     nominate: null, // filled below
