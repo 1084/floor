@@ -4,17 +4,20 @@
     1,
     2
   ],
-  "builtAt": "2026-10-11T14:10:49.354Z",
+  "builtAt": "2026-10-12T16:11:42.919Z",
   "members": 539,
   "votes": 1591,
   "house": 676,
   "senate": 915,
   "nominate": 537,
+  "bills": 400,
+  "billsWithSummary": 358,
   "sources": {
     "legislators": "https://github.com/unitedstates/congress-legislators",
     "voteview": "https://voteview.com/data",
     "house": "https://clerk.house.gov/Votes",
     "senate": "https://www.senate.gov/legislative/votes_new.htm",
-    "zip": "https://github.com/OpenSourceActivismTech/us-zipcodes-congress"
+    "zip": "https://github.com/OpenSourceActivismTech/us-zipcodes-congress",
+    "bills": "https://api.congress.gov"
   }
 }
