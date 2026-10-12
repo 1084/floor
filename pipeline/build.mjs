@@ -15,6 +15,7 @@
 import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildBills } from "./bills.mjs";
 import yaml from "js-yaml";
 import { parseHouseVote, parseSenateVote, parseSenateMenu, parseVoteviewMembers, parseZipDistricts } from "./parsers.mjs";
 
@@ -191,6 +192,14 @@ try {
   log(`${Object.keys(zip).length} ZIP codes`);
 } catch (e) { log("zip FAILED:", e.message); }
 
+/* ---------- 6. Bill titles + CRS summaries (for in-app search) ---------- */
+let bills = {};
+try {
+  const prev = resolve(OUT, "bills.json");
+  const existing = existsSync(prev) ? JSON.parse(readFileSync(prev, "utf8")) : {};
+  bills = await buildBills({ congress: CONGRESS, votes, existing, apiKey: process.env.CONGRESS_API_KEY, log });
+} catch (e) { log("bills FAILED:", e.message); }
+
 /* ---------- Write ---------- */
 const slim = v => ({ id: v.id, chamber: v.chamber, date: v.date, number: v.number, question: v.question, description: v.description, bill: v.bill, result: v.result, tally: v.tally });
 writeFileSync(resolve(OUT, "members.json"), JSON.stringify(members));
@@ -198,5 +207,6 @@ writeFileSync(resolve(OUT, "votes-index.json"), JSON.stringify(votes.map(slim)))
 for (const v of votes) writeFileSync(resolve(OUT, "votes", v.id + ".json"), JSON.stringify(v));
 for (const m of members) writeFileSync(resolve(OUT, "members", m.id + ".json"), JSON.stringify({ id: m.id, votes: memberVotes[m.id] }));
 writeFileSync(resolve(OUT, "zip.json"), JSON.stringify(zip));
-writeFileSync(resolve(OUT, "meta.json"), JSON.stringify({ congress: CONGRESS, sessions: SESSIONS, builtAt: new Date().toISOString(), members: members.length, votes: votes.length, house: votes.filter(v => v.chamber === "house").length, senate: votes.filter(v => v.chamber === "senate").length, nominate: members.filter(m => m.nominate).length, sources: { legislators: "https://github.com/unitedstates/congress-legislators", voteview: "https://voteview.com/data", house: "https://clerk.house.gov/Votes", senate: "https://www.senate.gov/legislative/votes_new.htm", zip: "https://github.com/OpenSourceActivismTech/us-zipcodes-congress" } }, null, 2));
+if (Object.keys(bills).length) writeFileSync(resolve(OUT, "bills.json"), JSON.stringify(bills));
+writeFileSync(resolve(OUT, "meta.json"), JSON.stringify({ congress: CONGRESS, sessions: SESSIONS, builtAt: new Date().toISOString(), members: members.length, votes: votes.length, house: votes.filter(v => v.chamber === "house").length, senate: votes.filter(v => v.chamber === "senate").length, nominate: members.filter(m => m.nominate).length, bills: Object.keys(bills).length, billsWithSummary: Object.values(bills).filter(b => b.summary).length, sources: { legislators: "https://github.com/unitedstates/congress-legislators", voteview: "https://voteview.com/data", house: "https://clerk.house.gov/Votes", senate: "https://www.senate.gov/legislative/votes_new.htm", zip: "https://github.com/OpenSourceActivismTech/us-zipcodes-congress", bills: "https://api.congress.gov" } }, null, 2));
 log(`done: ${members.length} members, ${votes.length} votes → ${OUT}`);

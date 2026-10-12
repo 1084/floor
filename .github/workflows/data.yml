@@ -26,6 +26,7 @@ jobs:
         env:
           CONGRESS: "119"
           SESSIONS: "1,2"
+          CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}   # bill titles + CRS summaries (docs/data/bills.json)
         run: npm run build
       - name: Commit refreshed data
         run: |
