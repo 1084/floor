@@ -4,14 +4,14 @@
     1,
     2
   ],
-  "builtAt": "2026-10-12T16:11:42.919Z",
+  "builtAt": "2026-10-12T16:54:51.687Z",
   "members": 539,
   "votes": 1591,
   "house": 676,
   "senate": 915,
   "nominate": 537,
-  "bills": 400,
-  "billsWithSummary": 358,
+  "bills": 511,
+  "billsWithSummary": 458,
   "sources": {
     "legislators": "https://github.com/unitedstates/congress-legislators",
     "voteview": "https://voteview.com/data",
