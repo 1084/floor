@@ -105,6 +105,7 @@ function shell({ pageTitle, description, canonical, body, schema, lastmod }) {
   .app p { margin:0 0 10px; color:#C8D2E0; font-size:15px; max-width:60ch }
   .app .badges { display:flex; flex-wrap:wrap; gap:10px; align-items:center }
   .app .badges img { height:40px; display:block }
+  .app .badges img.play { height:47px; margin:-4px }  /* Google's badge includes its clear space; this matches its visible height to the App Store badge */
   .app .fine { font-size:12.5px; color:#8FA3BD; margin:8px 0 0 }
   @media (max-width:560px) { .app { grid-template-columns:1fr } .tally { grid-template-columns:repeat(2,minmax(0,1fr)) } }
   details.roll { margin:0 0 8px } details.roll summary { cursor:pointer; font-weight:600; color:var(--ink) }
@@ -145,7 +146,7 @@ ${body}
 }
 
 function appBlock(lead, text) {
-  const play = PLAY_URL ? `<a href="${PLAY_URL}"><img src="${BASE}/badges/google-play.png" alt="Get it on Google Play"></a>` : "";
+  const play = PLAY_URL ? `<a href="${PLAY_URL}"><img class="play" src="${BASE}/badges/google-play.svg" alt="Get it on Google Play"></a>` : "";
   return `  <aside class="app">
     <img class="icon" src="${BASE}/icon.png" alt="">
     <div>
