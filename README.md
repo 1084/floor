@@ -12,16 +12,28 @@ Live at **https://johnhubert.llc/floor/** (GitHub Pages, served from `docs/`).
 ```
 pipeline/build.mjs     fetches the sources and writes static JSON into docs/data/
 pipeline/parsers.mjs   parsers for the House XML, Senate XML, Voteview CSV, ZIP CSV
-test/                  parser tests against feed-shaped samples   (npm test)
+pipeline/bills.mjs     bill titles + CRS summaries from api.congress.gov → docs/data/bills.json
+pipeline/pages.mjs     one static HTML page per vote and per member, for search engines
+test/                  parser and page-generator tests             (npm test)
 docs/index.html        the whole front end: one file, no build step, no framework
 docs/data/             generated — members.json, votes-index.json, votes/*.json,
-                       members/*.json (each member's positions), zip.json, meta.json
-.github/workflows/     nightly data refresh that commits docs/data back to main
+                       members/*.json (each member's positions), zip.json, meta.json, bills.json
+docs/votes/<id>/       generated — indexable page per roll call (tally, CRS summary, every position)
+docs/members/<id>/     generated — indexable page per member (recent votes, contact)
+docs/sitemap.xml       generated — every page above, for Google Search Console
+.github/workflows/     nightly data refresh that commits docs/ back to main
 ```
 
 There is no server. The nightly GitHub Action runs the pipeline, commits the JSON,
 and GitHub Pages serves it. The browser loads ~1 MB up front (members + vote index)
 and fetches a member's or a vote's detail file on demand.
+
+Search engines cannot index the hash-routed app, so the pipeline also writes a plain
+HTML page per vote (`/floor/votes/h-119-2-313/`) and per member (`/floor/members/B001292/`).
+Each carries the App Store badge, Safari's Smart App Banner, and a `PLAY_URL` constant
+in `pipeline/pages.mjs` that adds the Google Play badge to every page once it is set.
+Pages are only rewritten when their data changes, so nightly commits stay small.
+Submit `https://johnhubert.llc/floor/sitemap.xml` in Search Console once.
 
 ### Sources (all public, no API keys)
 

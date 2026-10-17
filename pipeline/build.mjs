@@ -8,6 +8,9 @@
 //   3. House Clerk roll-call XML           — every House vote, member positions by bioguide id
 //   4. Senate LIS roll-call XML            — every Senate vote, member positions by LIS id
 //   5. OpenSourceActivismTech zccd.csv      — ZIP code → congressional district(s)
+//   6. api.congress.gov                     — bill titles + CRS summaries (needs CONGRESS_API_KEY)
+// Also writes one static HTML page per vote and per member (pipeline/pages.mjs) so search
+// engines can index them; the hash-routed app in docs/index.html is not crawlable.
 //
 // Set CONGRESS (default 119) and SESSIONS (default "1,2"). Network failures for a
 // single source are logged and skipped, so one broken feed doesn't block the rest.
@@ -16,6 +19,7 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from 
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildBills } from "./bills.mjs";
+import { buildPages } from "./pages.mjs";
 import yaml from "js-yaml";
 import { parseHouseVote, parseSenateVote, parseSenateMenu, parseVoteviewMembers, parseZipDistricts } from "./parsers.mjs";
 
@@ -209,4 +213,6 @@ for (const m of members) writeFileSync(resolve(OUT, "members", m.id + ".json"), 
 writeFileSync(resolve(OUT, "zip.json"), JSON.stringify(zip));
 if (Object.keys(bills).length) writeFileSync(resolve(OUT, "bills.json"), JSON.stringify(bills));
 writeFileSync(resolve(OUT, "meta.json"), JSON.stringify({ congress: CONGRESS, sessions: SESSIONS, builtAt: new Date().toISOString(), members: members.length, votes: votes.length, house: votes.filter(v => v.chamber === "house").length, senate: votes.filter(v => v.chamber === "senate").length, nominate: members.filter(m => m.nominate).length, bills: Object.keys(bills).length, billsWithSummary: Object.values(bills).filter(b => b.summary).length, sources: { legislators: "https://github.com/unitedstates/congress-legislators", voteview: "https://voteview.com/data", house: "https://clerk.house.gov/Votes", senate: "https://www.senate.gov/legislative/votes_new.htm", zip: "https://github.com/OpenSourceActivismTech/us-zipcodes-congress", bills: "https://api.congress.gov" } }, null, 2));
+/* ---------- 7. Static pages for search engines (docs/votes/*, docs/members/*, docs/sitemap.xml) ---------- */
+try { buildPages({ votes, members, memberVotes, bills, docs: resolve(here, "../docs"), log }); } catch (e) { log("pages FAILED:", e.message); }
 log(`done: ${members.length} members, ${votes.length} votes → ${OUT}`);

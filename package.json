@@ -6,7 +6,7 @@
   "description": "The Floor: public profiles and voting records of every member of the U.S. House and Senate.",
   "scripts": {
     "build": "node pipeline/build.mjs",
-    "test": "node test/parsers.test.mjs"
+    "test": "node test/parsers.test.mjs && node test/pages.test.mjs"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

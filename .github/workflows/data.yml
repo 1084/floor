@@ -28,11 +28,11 @@ jobs:
           SESSIONS: "1,2"
           CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}   # bill titles + CRS summaries (docs/data/bills.json)
         run: npm run build
-      - name: Commit refreshed data
+      - name: Commit refreshed data and pages
         run: |
           git config user.name "John Hubert LLC"
           git config user.email "support@johnhubert.llc"
-          git add docs/data
+          git add docs/data docs/votes docs/members docs/sitemap.xml docs/pages.css
           if git diff --cached --quiet; then echo "no changes"; else
             git commit -m "Data refresh $(date -u +%Y-%m-%d)"
             git push
