@@ -4,12 +4,13 @@ name: Refresh data
 
 on:
   schedule:
-    # Every two hours while the House and Senate are usually in session (noon to midnight Eastern, Mon to Fri),
-    # so a vote shows in the app within about two hours, plus the overnight run for anything late. Each run
-    # takes about two minutes and commits only when something changed, so quiet days cost nothing.
-    - cron: "17 7 * * *"          # 07:17 UTC daily (~3 AM Eastern)
-    - cron: "17 16-23/2 * * 1-5"  # 16:17, 18:17, 20:17, 22:17 UTC weekdays (12:17 to 6:17 PM Eastern)
-    - cron: "17 1-5/2 * * 2-6"    # 01:17, 03:17, 05:17 UTC Tue-Sat (9:17 PM to 1:17 AM Eastern)
+    # Hourly while the House and Senate are usually in session (10 AM to 1 AM Eastern, Mon to Fri), so a vote
+    # shows in the app within the hour, plus the overnight run for anything late. Each run takes about two
+    # minutes and commits only when something changed, so quiet hours cost nothing. GitHub may start a
+    # scheduled run some minutes late when its queue is busy; the alerts Worker (every 5 min) is the fast path.
+    - cron: "17 7 * * *"        # 07:17 UTC daily (~3 AM Eastern)
+    - cron: "17 14-23 * * 1-5"  # hourly 14:17 to 23:17 UTC weekdays (10:17 AM to 7:17 PM Eastern)
+    - cron: "17 0-5 * * 2-6"    # hourly 00:17 to 05:17 UTC Tue-Sat (8:17 PM to 1:17 AM Eastern)
   workflow_dispatch:
 
 permissions:
